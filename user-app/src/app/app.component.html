@@ -1,0 +1,66 @@
+<app-navbar></app-navbar>
+
+<!-- HOME / HERO -->
+<app-home></app-home>
+
+<!-- RESERVAS -->
+<section id="reservas">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">01 — Reservas</div>
+      <h2 class="section-title">Clases &amp; Pistas</h2>
+    </div>
+  </div>
+
+  <div id="authPrompt" class="auth-prompt" style="display:none">
+    <div class="auth-prompt-icon">⚡</div>
+    <div class="auth-prompt-text">
+      Para reservar debes estar registrado.
+      <button class="auth-prompt-link" (click)="ui.openAuth('login')">Inicia sesión</button>
+      o <button class="auth-prompt-link" (click)="ui.openAuth('register')">crea una cuenta gratis</button>
+    </div>
+  </div>
+
+  <app-clases></app-clases>
+
+  <div style="margin-top:clamp(48px,8vh,80px)">
+    <div class="reveal" style="margin-bottom:28px">
+      <div class="section-tag">Pistas de Pádel</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,4vw,2.2rem);letter-spacing:2px">Reserva tu pista</h3>
+    </div>
+    <app-padel></app-padel>
+  </div>
+</section>
+
+<!-- MÁQUINAS -->
+<section id="maquinas">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">02 — Instalaciones</div>
+      <h2 class="section-title">Nuestro Equipamiento</h2>
+    </div>
+  </div>
+  <app-maquinas></app-maquinas>
+</section>
+
+<!-- PRECIOS -->
+<section id="precios">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">03 — Membresías</div>
+      <h2 class="section-title">Elige tu Plan</h2>
+    </div>
+  </div>
+  <app-precios></app-precios>
+</section>
+
+<app-footer></app-footer>
+<app-toast></app-toast>
+
+<!-- Modals — rendered conditionally -->
+@if (ui.showAuth())    { <app-modal-auth></app-modal-auth> }
+@if (ui.showPay())     { <app-modal-payment></app-modal-payment> }
+@if (ui.showSuccess()) { <app-modal-success></app-modal-success> }
+@if (ui.showPanel())   { <app-user-panel></app-user-panel> }
+@if (ui.showAdmin())   { <app-admin-access></app-admin-access> }
+@if (ui.showAdminP())  { <app-admin-panel></app-admin-panel> }

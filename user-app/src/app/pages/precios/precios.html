@@ -1,0 +1,46 @@
+@if (membership()) {
+  <div style="background:linear-gradient(135deg,#1a1a00,#0a0a0a);border:1px solid var(--accent);padding:clamp(20px,4vw,36px);margin-bottom:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+    <div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">⭐ Miembro activo</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.5rem,4vw,2.5rem);letter-spacing:2px">
+        ¡Bienvenido/a al club, <span style="color:var(--accent)">{{ firstName() }}</span>!
+      </div>
+      <div style="font-size:0.88rem;color:var(--muted);margin-top:8px;line-height:1.6">
+        Estás disfrutando del plan <strong style="color:var(--accent)">{{ activeName() }}</strong>. Gracias por formar parte de IRONCORE. 💪
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:180px">
+      <button class="btn-accent" style="font-size:0.65rem" (click)="ui.showPanel.set(true)">Gestionar membresía →</button>
+      <button class="btn-ghost" style="font-size:0.62rem;border-color:var(--accent2);color:var(--accent2)" (click)="cancelMembership()">Cancelar membresía</button>
+    </div>
+  </div>
+}
+
+<div class="pricing-grid stagger">
+  @for (p of plans; track p.name) {
+    <div class="pricing-card" [class.featured]="p.featured && !activeName()" [class.not-featured]="!p.featured || !!activeName()"
+      [style.border-color]="isActive(p) ? 'var(--accent)' : ''"
+      [style.box-shadow]="isActive(p) ? '0 0 30px rgba(232,255,62,0.1)' : ''">
+      @if (p.badge && !activeName()) { <div class="pricing-badge">{{ p.badge }}</div> }
+      @if (isActive(p)) { <div class="pricing-badge" style="background:var(--accent);color:var(--black)">✓ Activo</div> }
+      <div class="plan-name" [style.color]="isActive(p) ? 'var(--accent)' : ''">{{ p.name }}</div>
+      <div class="plan-target">{{ p.target }}</div>
+      <div class="plan-price" [style.color]="isActive(p) ? 'var(--accent)' : ''">{{ p.price }}€</div>
+      <div class="plan-period">{{ p.period }}</div>
+      <ul class="plan-features">
+        @for (f of p.features; track f.text) {
+          <li [class.inactive]="!f.active">
+            {{ f.text }}
+            @if (isActive(p) && f.active) {
+              <span style="color:var(--accent);font-size:0.7rem;margin-left:4px">✓ activo</span>
+            }
+          </li>
+        }
+      </ul>
+      <button class="btn-plan" [class.not-featured]="!p.featured || !!activeName()"
+        [style]="btnStyle(p)" [disabled]="isActive(p)" (click)="select(p)">
+        {{ btnLabel(p) }}
+      </button>
+    </div>
+  }
+</div>

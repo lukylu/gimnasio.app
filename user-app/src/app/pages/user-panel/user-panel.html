@@ -1,0 +1,91 @@
+<div class="modal-overlay open" (click)="onOverlay($event)">
+  <div class="admin-modal" style="max-width:640px">
+    <button class="modal-close" (click)="ui.showPanel.set(false)">✕</button>
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap">
+      <div class="avatar" style="width:48px;height:48px;font-size:1.1rem;border-radius:50%">{{ initials() }}</div>
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px">{{ user()?.name }}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted)">{{ user()?.email }}</div>
+      </div>
+      <button class="btn-ghost" style="margin-left:auto;border-color:var(--accent2);color:var(--accent2);font-size:0.6rem" (click)="logout()">Salir</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="admin-stats" style="margin-bottom:20px">
+      <div class="admin-stat"><div class="admin-stat-num">{{ allOrders().length }}</div><div class="admin-stat-label">Pedidos</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" style="color:#4dff91">{{ classOrders().length }}</div><div class="admin-stat-label">Clases</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" style="color:var(--accent2)">{{ courtOrders().length }}</div><div class="admin-stat-label">Pistas</div></div>
+      <div class="admin-stat"><div class="admin-stat-num">{{ totalSpent() }}€</div><div class="admin-stat-label">Gastado</div></div>
+    </div>
+
+    <!-- Membership -->
+    @if (membership()) {
+      <div style="background:var(--accent);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--black)">{{ membership()!.emoji }} {{ membership()!.name }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:rgba(0,0,0,0.6);margin-top:4px">{{ membership()!.price }}€/mes · •••• {{ membership()!.cardLast4 }}</div>
+        </div>
+        <button (click)="cancel(membership()!.id)" style="font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:1px;text-transform:uppercase;padding:8px 14px;background:rgba(0,0,0,0.15);border:1px solid rgba(0,0,0,0.25);color:var(--black);cursor:pointer">Cancelar</button>
+      </div>
+    } @else {
+      <div style="background:var(--card);border:1px dashed var(--border);padding:20px;text-align:center;margin-bottom:20px">
+        <div style="font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:12px">Sin membresía activa</div>
+        <button class="btn-accent" style="font-size:0.65rem;padding:10px 20px" (click)="ui.showPanel.set(false)">Ver planes →</button>
+      </div>
+    }
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:16px">
+      <button class="tab" [class.active]="tab()==='classes'" (click)="tab.set('classes')">🏋️ Clases ({{ classOrders().length }})</button>
+      <button class="tab" [class.active]="tab()==='courts'"  (click)="tab.set('courts')">🎾 Pistas ({{ courtOrders().length }})</button>
+    </div>
+
+    <!-- Orders list -->
+    <div style="max-height:300px;overflow-y:auto">
+      @if (tab() === 'classes') {
+        @if (classOrders().length === 0) {
+          <div style="text-align:center;padding:40px;font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted)">Sin clases reservadas aún</div>
+        }
+        @for (o of classOrders(); track o.id) {
+          <div style="background:var(--card);border:1px solid var(--border);padding:16px 20px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="font-size:1.8rem">{{ o.emoji }}</div>
+              <div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px">{{ o.name }}</div>
+                <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);margin-top:3px;white-space:pre-line">{{ o.detail }}</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--accent)">{{ o.price }}€</div>
+              <div style="font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted)">•••• {{ o.cardLast4 }}</div>
+              <button (click)="cancel(o.id)" style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;background:transparent;border:1px solid var(--accent2);color:var(--accent2);cursor:pointer">✕ Cancelar</button>
+            </div>
+          </div>
+        }
+      }
+      @if (tab() === 'courts') {
+        @if (courtOrders().length === 0) {
+          <div style="text-align:center;padding:40px;font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted)">Sin pistas reservadas aún</div>
+        }
+        @for (o of courtOrders(); track o.id) {
+          <div style="background:var(--card);border:1px solid var(--border);padding:16px 20px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="font-size:1.8rem">{{ o.emoji }}</div>
+              <div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px">{{ o.name }}</div>
+                <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);margin-top:3px;white-space:pre-line">{{ o.detail }}</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--accent)">{{ o.price }}€</div>
+              <div style="font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted)">•••• {{ o.cardLast4 }}</div>
+              <button (click)="cancel(o.id)" style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;background:transparent;border:1px solid var(--accent2);color:var(--accent2);cursor:pointer">✕ Cancelar</button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

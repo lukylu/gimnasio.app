@@ -1,0 +1,44 @@
+<div class="classes-grid stagger">
+  @for (c of classes; track c.id) {
+    <div class="class-card"
+      [style.--class-color]="color(c.id).color"
+      [style.--class-color-alpha]="color(c.id).alpha"
+      [style.--class-color-alpha2]="color(c.id).alpha2"
+      [style.--class-color-border]="color(c.id).border">
+      <div class="class-stripe"></div>
+      <div class="class-body">
+        <div class="class-header">
+          <div class="class-emoji-wrap">{{ c.emoji }}</div>
+          <div class="class-header-text">
+            <div class="class-name">{{ c.name }}</div>
+            <div class="class-instructor">👤 {{ c.instructor }}</div>
+          </div>
+          <div class="class-level-badge">{{ levelStars(c.level) }} {{ c.level }}</div>
+        </div>
+        <div class="class-desc">{{ c.desc }}</div>
+        <div class="class-pills">
+          <div class="class-pill">⏱ {{ c.duration }}</div>
+          <div class="class-pill">🏷 {{ c.level }}</div>
+          @if (isUrgent(c)) {
+            <div class="class-pill" [style.color]="color(c.id).color" [style.border-color]="color(c.id).border" [style.background]="color(c.id).alpha">
+              🔥 Pocas plazas
+            </div>
+          }
+        </div>
+        <div class="class-schedule">📅 {{ c.time }}</div>
+        <div class="class-spots">
+          <div class="spots-row">
+            <span class="spots-label">Plazas disponibles</span>
+            <span class="spots-count" [style.color]="color(c.id).color">
+              {{ c.spots }}<span style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted)"> / {{ c.maxSpots }}</span>
+            </span>
+          </div>
+          <div class="spots-bar">
+            <div class="spots-fill" [style.width]="barPct(c)" [style.background]="color(c.id).color"></div>
+          </div>
+        </div>
+        <button class="btn-reserve" (click)="reserve(c)">Reservar plaza →</button>
+      </div>
+    </div>
+  }
+</div>

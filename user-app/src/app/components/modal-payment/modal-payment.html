@@ -1,0 +1,65 @@
+<div class="modal-overlay open" (click)="onOverlay($event)">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" (click)="ui.showPay.set(false)">✕</button>
+    <div class="modal-logo">PAGO SEGURO</div>
+    <div class="modal-sub">{{ ctx()?.type === 'plan' ? 'Suscripción' : ctx()?.type === 'class' ? 'Reserva de clase' : 'Reserva de pista' }}</div>
+
+    <!-- Resumen -->
+    <div style="background:var(--card);border:1px solid var(--border);border-left:3px solid var(--accent);padding:16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px">{{ ctx()?.emoji }} {{ ctx()?.name }}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);margin-top:6px;line-height:1.8;white-space:pre-line">{{ ctx()?.detail }}</div>
+      </div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);white-space:nowrap">{{ ctx()?.price }}€{{ suffix() }}</div>
+    </div>
+
+    <!-- Paso 1 -->
+    @if (step() === 1) {
+      <div style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:16px">① Datos personales</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" [(ngModel)]="payName" placeholder="Tu nombre"></div>
+        <div class="form-group"><label class="form-label">Apellido</label><input class="form-input" [(ngModel)]="payLastname" placeholder="Tu apellido"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" [(ngModel)]="payEmail" placeholder="tu@email.com"></div>
+      <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" type="tel" [(ngModel)]="payPhone" placeholder="+34 600 000 000"></div>
+      @if (err1()) { <div class="form-error show">{{ err1() }}</div> }
+      <button class="btn-submit" (click)="goStep2()">Continuar →</button>
+    }
+
+    <!-- Paso 2 -->
+    @if (step() === 2) {
+      <div style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:16px">② Datos de pago</div>
+      <div class="form-group">
+        <label class="form-label">Número de tarjeta</label>
+        <div style="position:relative">
+          <input class="form-input" [(ngModel)]="cardNumber" (ngModelChange)="onCard($event)" placeholder="•••• •••• •••• ••••" maxlength="40" style="padding-right:48px">
+          <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:1.2rem">{{ cardIcon() }}</span>
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted);margin-top:6px">Para probar: "Gold Credit Card"</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Caducidad</label><input class="form-input" [(ngModel)]="cardExpiry" (ngModelChange)="onExpiry($event)" placeholder="MM/AA" maxlength="5"></div>
+        <div class="form-group"><label class="form-label">CVV</label><input class="form-input" [(ngModel)]="cardCvv" placeholder="•••" maxlength="4"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Titular</label><input class="form-input" [(ngModel)]="cardHolder" placeholder="NOMBRE APELLIDO"></div>
+      @if (err2()) { <div class="form-error show">{{ err2() }}</div> }
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(232,255,62,0.04);border:1px solid rgba(232,255,62,0.1);margin:12px 0;font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--muted)">🔒 Pago cifrado SSL 256-bit</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" style="flex:0.5" (click)="step.set(1)">← Volver</button>
+        <button class="btn-submit" style="flex:1;margin-top:0" (click)="pay()">Pagar ahora →</button>
+      </div>
+    }
+
+    <!-- Paso 3 -->
+    @if (step() === 3) {
+      <div style="text-align:center;padding:32px 0">
+        <div style="font-size:2.5rem;margin-bottom:16px">{{ procIcon() }}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;margin-bottom:8px">{{ procTitle() }}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted)">{{ procText() }}</div>
+        <div style="margin-top:24px;height:3px;background:var(--border);overflow:hidden">
+          <div style="height:100%;background:var(--accent);transition:width 2.5s ease" [style.width]="progress()"></div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

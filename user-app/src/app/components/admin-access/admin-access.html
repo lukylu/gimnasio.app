@@ -1,0 +1,14 @@
+<div class="modal-overlay open" (click)="onOverlay($event)">
+  <div class="admin-access-modal" [class.admin-shake]="shake()">
+    <button class="modal-close" (click)="ui.showAdmin.set(false)">✕</button>
+    <div class="admin-lock">🔐</div>
+    <div class="admin-access-title">ADMIN</div>
+    <div class="admin-access-sub">Panel de administración</div>
+    <div class="form-group">
+      <label class="form-label">Contraseña de acceso</label>
+      <input class="form-input" type="password" [(ngModel)]="pass" placeholder="••••••••" (keydown.enter)="verify()">
+    </div>
+    @if (err()) { <div class="form-error show">{{ err() }}</div> }
+    <button class="btn-submit" (click)="verify()">Acceder →</button>
+  </div>
+</div>

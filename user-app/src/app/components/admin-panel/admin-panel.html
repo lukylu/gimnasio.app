@@ -1,0 +1,60 @@
+<div class="modal-overlay open" (click)="onOverlay($event)">
+  <div class="admin-modal">
+    <button class="modal-close" (click)="ui.showAdminP.set(false)">✕</button>
+    <div class="admin-header">
+      <div>
+        <div class="admin-title">⬡ PANEL ADMIN</div>
+        <div class="admin-subtitle">IRONCORE GYM · Base de datos de usuarios</div>
+      </div>
+    </div>
+
+    <div class="admin-stats">
+      <div class="admin-stat"><div class="admin-stat-num">{{ users().length }}</div><div class="admin-stat-label">Usuarios totales</div></div>
+      <div class="admin-stat"><div class="admin-stat-num">{{ todayCount() }}</div><div class="admin-stat-label">Registros hoy</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" style="font-size:1rem;color:#4dff91">IndexedDB</div><div class="admin-stat-label">Almacenamiento</div></div>
+      <div class="admin-stat"><div class="admin-stat-num">{{ lastUser() }}</div><div class="admin-stat-label">Último registro</div></div>
+    </div>
+
+    <div class="admin-table-wrap">
+      @if (users().length === 0) {
+        <div class="admin-empty">⬡ No hay usuarios registrados aún</div>
+      } @else {
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>#ID</th><th>Nombre</th><th>Email</th>
+              <th>SHA-256</th><th>Registro</th><th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of users(); track u.id) {
+              <tr [style.opacity]="deletingId()===u.id ? '0' : '1'" [style.transform]="deletingId()===u.id ? 'translateX(20px)' : 'none'" style="transition:all 0.3s">
+                <td><span class="id-badge">#{{ idShort(u.id) }}</span></td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td class="hash-cell" [title]="u.passwordHash">{{ u.passwordHash }}</td>
+                <td class="date-cell">{{ u.registeredAt || '—' }}</td>
+                <td>
+                  <button (click)="deleteUser(u)" style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;background:transparent;border:1px solid var(--accent2);color:var(--accent2);cursor:pointer;transition:all 0.2s;white-space:nowrap"
+                    (mouseover)="$any($event.target).style.background='var(--accent2)';$any($event.target).style.color='#fff'"
+                    (mouseout)="$any($event.target).style.background='transparent';$any($event.target).style.color='var(--accent2)'">
+                    ✕ Eliminar
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <div class="admin-json-toggle">
+      <button class="btn-json" (click)="jsonVisible.update(v=>!v)">
+        {{ jsonVisible() ? '✕ Cerrar JSON' : '{ } Ver como JSON' }}
+      </button>
+      @if (jsonVisible()) {
+        <div class="json-output visible">{{ jsonOut() }}</div>
+      }
+    </div>
+  </div>
+</div>

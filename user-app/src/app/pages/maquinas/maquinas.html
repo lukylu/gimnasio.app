@@ -1,0 +1,47 @@
+<div class="machines-tabs" id="machinesTabs">
+  @for (t of tabs; track t.key) {
+    <button class="tab" [class.active]="activeZone() === t.key"
+      [attr.data-count]="t.count || null"
+      (click)="activeZone.set(t.key)">
+      {{ t.label }}
+    </button>
+  }
+</div>
+
+<!-- Zone banner -->
+<div class="zone-banner" [style.border-left-color]="meta().color">
+  <div class="zone-banner-icon">{{ meta().icon }}</div>
+  <div style="flex:1;min-width:0">
+    <div class="zone-banner-title">{{ meta().label }}</div>
+    <div class="zone-banner-desc">{{ meta().desc }}</div>
+  </div>
+  <div class="zone-banner-stats">
+    @for (s of meta().stats; track s.l) {
+      <div class="zone-stat">
+        <div class="zone-stat-num" [style.color]="meta().color">{{ s.n }}</div>
+        <div class="zone-stat-label">{{ s.l }}</div>
+      </div>
+    }
+  </div>
+  <div class="zone-banner-num" [style.color]="meta().color">{{ machines().length }}</div>
+</div>
+
+<!-- Machines grid -->
+<div class="machines-list active">
+  @for (m of machines(); track m.name; let i = $index) {
+    <div class="machine-card machine-card-enter" [style.--zone-color]="zoneColor(m.zone)" [style.animation-delay]="i * 35 + 'ms'">
+      <div class="machine-card-top">
+        <div class="machine-icon">{{ m.icon }}</div>
+        <div class="machine-card-num">{{ (i + 1).toString().padStart(2, '0') }}</div>
+      </div>
+      <div class="machine-zone" [style.color]="zoneColor(m.zone)">{{ m.zone }}</div>
+      <div class="machine-name">{{ m.name }}</div>
+      <div class="machine-desc">{{ m.desc }}</div>
+      <div class="machine-tags">
+        @for (tag of m.tags; track tag) {
+          <span class="machine-tag" [style.color]="zoneColor(m.zone)">{{ tag }}</span>
+        }
+      </div>
+    </div>
+  }
+</div>

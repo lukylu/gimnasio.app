@@ -1,0 +1,61 @@
+<!-- Date bar -->
+<div class="padel-date-bar reveal">
+  @for (d of days(); track d.key) {
+    <button class="date-chip"
+      [class.today-chip]="d.isToday"
+      [class.selected]="selectedDate() && dateKey() === d.key"
+      (click)="selectedDate.set(d.date)">
+      <div class="day-name">{{ d.dow }}</div>
+      <div class="day-num">{{ d.num }}</div>
+      <div class="day-name">{{ d.mon }}</div>
+    </button>
+  }
+</div>
+
+<!-- Courts grid -->
+<div class="padel-grid-full stagger">
+  @for (court of courts; track court.id) {
+    <div class="court-card-new">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="court-title">{{ court.name }}</div>
+          <div style="font-size:0.75rem;color:var(--muted);margin-top:2px">
+            {{ court.type }} · {{ court.indoor ? '🏠 Cubierta' : '☀️ Exterior' }}
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:1px"
+            [style.color]="freeCount(court) > 0 ? '#4dff91' : 'var(--accent2)'">
+            {{ freeCount(court) > 0 ? freeCount(court) + ' huecos libres' : 'Sin huecos' }}
+          </div>
+          @if (myCount(court) > 0) {
+            <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--accent);margin-top:3px">
+              ✓ {{ myCount(court) }} reserva{{ myCount(court) > 1 ? 's' : '' }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="padel-slots-grid">
+        @for (hour of hours; track hour) {
+          <button class="padel-slot"
+            [class.slot-free]="slotState(court, hour) === 'free'"
+            [class.slot-busy]="slotState(court, hour) === 'busy'"
+            [class.slot-past]="slotState(court, hour) === 'past'"
+            [class.slot-mine]="slotState(court, hour) === 'mine'"
+            [disabled]="slotState(court, hour) !== 'free'"
+            (click)="book(court, hour)">
+            {{ hour }}
+          </button>
+        }
+      </div>
+
+      <div class="padel-legend">
+        <span class="padel-slot slot-free"  style="pointer-events:none">Libre</span>
+        <span class="padel-slot slot-busy"  style="pointer-events:none">Ocupado</span>
+        <span class="padel-slot slot-past"  style="pointer-events:none">Pasado</span>
+        <span class="padel-slot slot-mine"  style="pointer-events:none">Tu reserva</span>
+      </div>
+    </div>
+  }
+</div>

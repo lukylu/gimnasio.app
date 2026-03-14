@@ -1,0 +1,37 @@
+<nav [class.scrolled]="scrolled()">
+  <div class="nav-logo" (click)="scrollTo('hero')">IRONCORE</div>
+  <div class="nav-links">
+    <a (click)="scrollTo('reservas')">Reservas</a>
+    <a (click)="scrollTo('maquinas')">Máquinas</a>
+    <a (click)="scrollTo('precios')">Membresías</a>
+  </div>
+  <div class="nav-actions">
+    @if (auth.currentUser()) {
+      <div class="user-pill" (click)="ui.showPanel.set(true)">
+        <div class="avatar">{{ initials() }}</div>
+        <span>{{ firstName() }}</span>
+      </div>
+    } @else {
+      <button class="btn-ghost" (click)="ui.openAuth('login')">Iniciar sesión</button>
+      <button class="btn-accent" (click)="ui.openAuth('register')">Registrarse</button>
+    }
+  </div>
+  <button class="nav-burger" [class.open]="drawerOpen()" (click)="drawerOpen.update(v=>!v)" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" [class.open]="drawerOpen()">
+  <a (click)="scrollTo('reservas')">Reservas</a>
+  <a (click)="scrollTo('maquinas')">Máquinas</a>
+  <a (click)="scrollTo('precios')">Membresías</a>
+  <div class="nav-drawer-actions">
+    @if (auth.currentUser()) {
+      <button class="btn-ghost" style="flex:1;border-color:var(--accent);color:var(--accent)" (click)="ui.showPanel.set(true);drawerOpen.set(false)">👤 Mi cuenta</button>
+      <button class="btn-ghost" style="flex:0.5;border-color:var(--accent2);color:var(--accent2)" (click)="auth.logout();drawerOpen.set(false)">Salir</button>
+    } @else {
+      <button class="btn-ghost" style="flex:1" (click)="ui.openAuth('login');drawerOpen.set(false)">Iniciar sesión</button>
+      <button class="btn-accent" style="flex:1" (click)="ui.openAuth('register');drawerOpen.set(false)">Registrarse</button>
+    }
+  </div>
+</div>

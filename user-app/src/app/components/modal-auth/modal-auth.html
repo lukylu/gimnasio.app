@@ -1,0 +1,42 @@
+<div class="modal-overlay open" (click)="onOverlay($event)">
+  <div class="modal">
+    <button class="modal-close" (click)="ui.showAuth.set(false)">✕</button>
+    <div class="modal-logo">IRONCORE</div>
+    <div class="modal-sub">Tu gimnasio en Oviedo</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab" [class.active]="ui.authTab()==='login'"    (click)="ui.authTab.set('login')">Iniciar sesión</button>
+      <button class="auth-tab" [class.active]="ui.authTab()==='register'" (click)="ui.authTab.set('register')">Registrarse</button>
+    </div>
+
+    @if (ui.authTab() === 'login') {
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" [(ngModel)]="loginEmail" placeholder="tu@email.com" (keydown.enter)="doLogin()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" [(ngModel)]="loginPass" placeholder="••••••••" (keydown.enter)="doLogin()">
+      </div>
+      @if (loginErr()) { <div class="form-error show">{{ loginErr() }}</div> }
+      <button class="btn-submit" (click)="doLogin()">Entrar →</button>
+    }
+
+    @if (ui.authTab() === 'register') {
+      <div class="form-group">
+        <label class="form-label">Nombre completo</label>
+        <input class="form-input" [(ngModel)]="regName" placeholder="Tu nombre">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" [(ngModel)]="regEmail" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" [(ngModel)]="regPass" placeholder="Mín. 6 caracteres">
+      </div>
+      @if (regErr()) { <div class="form-error show">{{ regErr() }}</div> }
+      <button class="btn-submit" (click)="doRegister()">Crear cuenta →</button>
+    }
+  </div>
+</div>
